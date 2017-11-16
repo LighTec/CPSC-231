@@ -1,0 +1,12 @@
+# Chapter 12, Exercise 2
+
+# By Kell Larson, for CPSC 231
+
+1. 44 functions are in the math module.
+
+2. math.ceil() Returns the smallest integer greater than the value inputted, while math.floor()
+returns the greatest integer lesser than the value inputted.
+
+3. 2 ** (1/2) does the same job as math.sqrt(2)
+
+4. The two constants in the math module are pi and e. However, according to python documentation, 3 more constants have been added since python 3.5. The new ones are: tau, inf, and nan.
