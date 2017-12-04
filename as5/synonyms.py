@@ -9,10 +9,14 @@ import math
 
 def main():
 	words = [('man', 1, {'derp' : 1, 'a' : 2}), ('i' , 6, {'derp' : 3, 'b' : 1})]
-	print(cosine_similarity(words[0], words[1]))
+	#print(cosine_similarity(words[0][2], words[1][2]))
 	
 	# This needs to work
 	print(cosine_similarity({"a": 1, "b": 2, "c": 3}, {"b": 4, "c": 5, "d": 6}))
+	
+	man = {"i": 3, "am": 3, "a": 2, "sick": 1, "spiteful": 1, "an": 1,"unattractive": 1}
+	liver = {"i": 1, "believe": 1, "my": 1, "is": 1, "diseased": 1}
+	print(cosine_similarity(man,liver))
 
 def norm(vec):
 #Return the norm of a vector stored as a dictionary,
@@ -23,20 +27,26 @@ def norm(vec):
 	return math.sqrt(sum_of_squares)
 
 def cosine_similarity(vec1, vec2):
-	sqrtAmt = 0
-	topNum = vec1[1] * vec2[1]
+	sqrtAmt1 = 0
+	sqrtAmt2 = 0
+	topNum = 0
 	# init equation here
-	for word1 in vec1[2]:
-		for word2 in vec2[2]:
-			if(word1 == word2 and not word1 == "xtyz"):
-				sqrtAmt += vec1[2][word1] ** 2
-				sqrtAmt += vec2[2][word1] ** 2
-				# add it to the equation
-		# do the sqrt here
-	print(sqrtAmt)
-	print(topNum)
+	for word1 in vec1:
+		sqrtAmt1 += vec1[word1] ** 2
+	# add it to the equation
+
+	for word2 in vec2:
+		sqrtAmt2 += vec2[word2] ** 2
+	# add it to the equation
+	for word1 in vec1:
+		for word2 in vec2:
+			if(word1 == word2):
+				topNum = topNum + (vec1[word1] * vec2[word1])
+
+	# do the sqrt here
+	sqrtAmt = sqrtAmt1 * sqrtAmt2
 	sqrtAmt = sqrtAmt ** (1/2)
-	print(sqrtAmt)
+	#print(sqrtAmt)
 	return (topNum / sqrtAmt)
 
 def build_semantic_descriptors(sentences):
