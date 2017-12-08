@@ -4,8 +4,6 @@
 # Implemented Methods and misc code written by:
 # Kell Larson. Last modified: Dec. 7, 2017.
 
-import re
-
 # A vector is a dictionary of words, like this: ["man" : 1, "i" : 3] and so on.
 def testSuite():
 	sampleSentences = [["i", "am", "a", "sick", "man"], ["i", "am", "a", "spiteful", "man"], ["i", "am", "an", "unattractive", "man"], ["i", "believe", "my", "liver", "is", "diseased"],["however", "i", "know", "nothing", "at", "all", "about", "my","disease", "and", "do", "not", "know", "for", "certain", "what", "ails", "me"]]
@@ -14,15 +12,16 @@ def testSuite():
 
 	words = [('man', 1, {'derp' : 1, 'a' : 2}), ('i' , 6, {'derp' : 3, 'b' : 1})]
 	
-	fileNames = ["Swanns Way"]#, "War and Peace"]
-	print(build_semantic_descriptors_from_files(fileNames))
+	fileNames = ["Swanns Way", "War and Peace"]
+	desc = build_semantic_descriptors_from_files(fileNames)
+	print(run_similarity_test("test.txt", desc, cosine_similarity))
 	#print(cosine_similarity(words[0][2], words[1][2]))
 	
 	# This needs to work
 	#print(cosine_similarity({"a": 1, "b": 2, "c": 3}, {"b": 4, "c": 5, "d": 6}))
 	#sample_dict = {	"man" : {"i": 3, "am": 3, "a": 2, "sick": 1, "spiteful": 1, "an": 1,"unattractive": 1}, "liver" : {"i": 1, "believe": 1, "my": 1, "is": 1, "diseased": 1}}
 	#print(cosine_similarity(sample_dict["man"], sample_dict["liver"]))
-
+	
 
 def main():
 	testSuite()
@@ -74,7 +73,7 @@ def build_semantic_descriptors(sentences):
 	return finalDict
 
 def build_semantic_descriptors_from_files(filenames):
-	# -*- coding: utf-8 -*-
+	# utf-8 coding assumed
 	
 	sentences = []
 
@@ -118,9 +117,39 @@ def build_semantic_descriptors_from_files(filenames):
 	
 
 def most_similar_word(word, choices, semantic_descriptors, similarity_fn):
-	print("Incomplete")
+	wordDict = semantic_descriptors[word]
+	mostSimilarAmt = -1
+	mostSimilarWord = ""
+	for choice in choices:
+		choiceDict = semantic_descriptors[choice]
+		similarity =  similarity_fn(wordDict, choiceDict)
+		if similarity > mostSimilarAmt:
+			mostSimilarAmt = similarity
+			mostSimilarWord = choice
+	return mostSimilarWord
 
 def run_similarity_test(filename, semantic_descriptors, similarity_fn):
-	print("Incomplete")
-
+	testsRaw = []
+	sucessRate = 0.0
+	numOfTests = 0
+	f = open(filename, "r")
+	lines = f.readLines()
+	for line in lines:
+		testsRaw.append(next(f))
+	tests = []
+	for line in testsRaw:
+		test = line.strip()
+		tests.append(test)
+		numOfTests += 1
+	for test in tests:
+		choices = []
+		while test.length > 2:
+			choices.append(test.pop())
+		answer = test.pop()
+		question = test.pop()
+		
+		guess = most_similar_word(question, choices, semantic_descriptors, similarity_fn)
+		if guess == answer:
+			successRate += 100.0
+	return (sucessRate / numOfTests)
 main()
